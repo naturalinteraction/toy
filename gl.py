@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-
 import pygame
 import OpenGL
 from pygame.locals import *
@@ -43,9 +41,11 @@ def DrawCube():
 def main():
     pygame.init()
     display = (1920,1080)
-    pygame.display.set_mode(display, DOUBLEBUF|OPENGL|FULLSCREEN)
-    gluPerspective(45, (display[0]/display[1]), 0.1, 50.0)
+    pygame.display.set_mode(display, DOUBLEBUF|OPENGL)  # |FULLSCREEN)
+    aspect_ratio = float(display[0]) / float(display[1])
+    gluPerspective(45, aspect_ratio, 0.1, 50.0)
     glTranslatef(0.0,0.0, -5)
+    glClearColor(0.3, 0.3, 0.3, 1.0)
     i = 0
     while i < 60 * 4:
         i = i + 1
