@@ -66,18 +66,21 @@ def InitBoard():
     board_p = select.epoll.fromfd(iface.get_fd())
     return iface, board_p
 
-def UpdatePoseText(posture):
+def UpdatePoseText(last_pose_change, posture):
     pose_text = []
-    for p in posture:
-        pose_text.append(font.render(p[1] + '   ' + p[3], True, (255, 255, 255)))
+    for n,p in enumerate(posture):
+        color = 155 + 100 * (last_pose_change == n)
+        pose_text.append(font.render(p[1] + '   ' + p[3], True, (color, color, color)))
     if len(posture) == 2:
-        pose_text.append(font.render('---', True, (255, 255, 255)))
+        pose_text.append(font.render('', True, (255, 255, 255)))
     return pose_text
 
-use_board = False
+USE_BOARD    = False
+CHANGE_SOUND = 1
+POSE_TIME    = 1
 
 iface = None
-if use_board:
+if USE_BOARD:
     iface, board_p = InitBoard()
 
 # pygame init
@@ -104,14 +107,20 @@ image = pygame.image.load('images/glow.png')
 frames = 0
 before = time.time()
 pose_time = time.time()
+effects[CHANGE_SOUND].play()
 previous_posture = GenerateNewPosture(None)
-pose_text = UpdatePoseText(previous_posture)
-
+pose_text = UpdatePoseText(-1, previous_posture)
+change_sound_played = False
 while True:
-    if (time.time() - pose_time) > 5.0:
-        previous_posture = ChangeSomething(previous_posture)
-        pose_text = UpdatePoseText(previous_posture)
+    if (time.time() - pose_time) > POSE_TIME - 0.4:
+        if not change_sound_played:
+            effects[CHANGE_SOUND].play()
+            change_sound_played = True
+    if (time.time() - pose_time) > POSE_TIME:
+        last_pose_change,previous_posture = ChangeSomething(previous_posture)
+        pose_text = UpdatePoseText(last_pose_change, previous_posture)
         pose_time = time.time()
+        change_sound_played = False
     if iface == None:
         m = numpy.array((0, 0, 0, 0))
     else:
@@ -146,9 +155,9 @@ while True:
         screen.blit(text, (1920 // 2 - text.get_width() // 2, 200 + 100 * n - text.get_height() // 2))
 
     pygame.display.flip()
-    # pygame.time.wait(15)
-    # time.sleep(1.0 / 90.0)
-    clock.tick(60)
+    # pygame.time.wait(15)  # milliseconds
+    # time.sleep(1.0 / 90.0)  # seconds
+    clock.tick(60)  # fps
     frames = frames + 1
     if frames % 60 == 0:
         print('fps %.1f' % (float(frames) / (time.time() - before)))
