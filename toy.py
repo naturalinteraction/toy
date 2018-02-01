@@ -69,7 +69,7 @@ def InitBoard():
 def UpdatePoseText(last_pose_change, posture):
     pose_text = []
     for n,p in enumerate(posture):
-        color = 155 + 100 * (last_pose_change == n)
+        color = 110 + 145 * (last_pose_change == n)
         pose_text.append(font.render(p[1] + '   ' + p[3], True, (color, color, color)))
     if len(posture) == 2:
         pose_text.append(font.render('', True, (255, 255, 255)))

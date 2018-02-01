@@ -7,8 +7,8 @@ Playful experiments.
 - [x] Print text with font
 - [ ] Mean and standard deviation
 - [ ] Fading trail
-- [ ] Number of readings per second
+- [x] Number of readings per second / fps
 - [ ] Class for board
 - [x] Standing posture generator
 - [ ] Voice commands
-- [ ] Merge toy and postures
+- [x] Merge toy and postures
