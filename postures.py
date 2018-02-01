@@ -3,8 +3,6 @@ import random
 
 # standing posture generator
 
-# todo: voice commands
-
 # GRIPE = Gestural Reduced Instruction Pose Expression
 # PRIPE = Postural Reduced Instruction Pose Expression
 
@@ -40,6 +38,7 @@ def RandomJointWithDirection(joints):
     return [joint, joint_name, direction, direction_name]
 
 def PrintJointAndDirection(joint_and_direction):
+    return
     print(joint_and_direction[1] + '  >>>  ' + joint_and_direction[3])
 
 def GenerateNewPosture(previous):
@@ -141,3 +140,5 @@ while True:
     time.sleep(delay)
     previous_posture = ChangeUpper(previous_posture, False)
     time.sleep(delay)
+    for p in previous_posture:
+        print(p[1] + ' ' + p[3])

@@ -10,3 +10,5 @@ Playful experiments.
 - [ ] Number of readings per second
 - [ ] Class for board
 - [x] Standing posture generator
+- [ ] Voice commands
+- [ ] Merge toy and postures
