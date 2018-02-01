@@ -9,3 +9,4 @@ Playful experiments.
 - [ ] Fading trail
 - [ ] Number of readings per second
 - [ ] Class for board
+- [x] Standing posture generator

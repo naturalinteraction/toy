@@ -6,6 +6,7 @@ import random
 # todo: voice commands
 
 directions = ['down', 'left', 'right', 'front', 'back', 'up']  # make sure 'down' remains only the first and 'up' remains only the last
+# foot up and foot front are the same?
 
 options = ['grab', 'torsion']  # grab is for hands, torsion is for the core/torso
 
