@@ -9,15 +9,15 @@ options = ['grab', 'torsion']  # grab is for hands, torsion is for the core/tors
 
 lower_joints = ['right knee', 'right foot', 'left knee', 'left foot']  # feet cannot go down; punta di piedi?
 core_joints = ['head']
-left_upper_joints = ['head', 'left elbow', 'left hand', 'both hands']  # by head we mean the head top, no sacrum
-right_upper_joints = ['head', 'right elbow', 'right hand', 'both hands']
+left_upper_joints = ['head', 'left elbow', 'left hand', 'left hand', 'both hands']  # by head we mean the head top, no sacrum
+right_upper_joints = ['head', 'right elbow', 'right hand', 'right hand', 'both hands']
 # what about shoulders?
 
 def RandomDirectionFor(joint_name):
     if 'foot' in joint_name or 'hand' in joint_name:
-        return random.randint(1, len(directions) - 1)  # feet cannot go down; hands down is the default
+        return random.randint(1, len(directions) - 1)  # feet cannot go down; hands down is the default, but could be useful in the sequence case: relax, go back to default, if previously not in default position
     if 'head' in joint_name:
-        return random.randint(0, len(directions) - 2)  # head up is the default
+        return random.randint(0, len(directions) - 2)  # head up is the default, but could be useful in the sequence case: relax, go back to default, if previously not in default position
     return random.randint(0, len(directions) - 1)
 
 def DirectionName(direction):
