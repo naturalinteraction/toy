@@ -39,7 +39,7 @@ def IsBoard(dev):
     return iface.get_devtype() == 'balanceboard'
 
 def WaitForBoard():
-    print("Waiting for balanceboard to connect...")
+    print("Waiting for board to connect...")
     mon = xwiimote.monitor(True, False)
     dev = None
     while True:
@@ -48,13 +48,11 @@ def WaitForBoard():
         if connected == None:
             continue
         elif IsBoard(connected):
-            print("Found balanceboard:", connected)
+            print("Found board.")
             dev = connected
             break
         else:
-            # print("Found non-balanceboard device:", connected)
-            # print("Waiting..")
-            pass
+            print("Waiting...")
     return dev
 
 def GetMeasurementsFromBoard(iface):
@@ -69,17 +67,18 @@ def GetMeasurementsFromBoard(iface):
         br = event.get_abs(1)[0]
         yield numpy.array((tl,tr,bl,br)) / 100.0
 
+def InitBoard():
+    iface = xwiimote.iface(WaitForBoard())
+    iface.open(xwiimote.IFACE_BALANCE_BOARD)
+    return iface
 
-iface = xwiimote.iface(WaitForBoard())
-iface.open(xwiimote.IFACE_BALANCE_BOARD)
-
+iface = InitBoard()
 pygame.init()
 display = (1920, 1080)
 screen = pygame.display.set_mode(display, DOUBLEBUF)  # |FULLSCREEN)
 clock = pygame.time.Clock()
-aspect_ratio = float(display[0]) / float(display[1])
-font = pygame.font.SysFont("Arial", 72)
-
+# print(pygame.font.get_fonts())
+font = pygame.font.SysFont("ubuntu", 72)
 text = font.render("Hello, World", True, (255, 255, 255))
 
 sound_files = glob.glob('sounds/*.wav')
