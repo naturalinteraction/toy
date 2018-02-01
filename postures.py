@@ -66,9 +66,25 @@ def GenerateNewPosture(previous):
     print('')
     return posture
 
-# todo: sequence, only change one thing from previous posture
+def ChangeLower(previous):
+    if previous == None:
+        previous_lower_side = 'none'
+    else:
+        previous_lower_side = previous[0][1].partition(' ')[0]
+    posture = previous
+    while True:
+        lower = RandomJointWithDirection(lower_joints)
+        if not previous_lower_side in lower[1]:  # alternate between left and right leg
+            break
+    posture[0] = lower
+    PrintJointAndDirection(lower)
+    print('')
+    return posture
+
+# mancano due gambe distese dritte verso terra
 
 previous_posture = None
+previous_posture = GenerateNewPosture(previous_posture)
 while True:
-    previous_posture = GenerateNewPosture(previous_posture)
+    previous_posture = ChangeLower(previous_posture)
     time.sleep(0.1)
