@@ -81,10 +81,47 @@ def ChangeLower(previous):
     print('')
     return posture
 
+def ChangeUpperLeft(previous):
+    posture = previous
+    lower = previous[0]
+    if 'both' in previous[1][1]:  # change both
+        posture = []
+        posture.append(lower)
+        while True:
+            left = RandomJointWithDirection(left_upper_joints)
+            if not left[2] == lower[2]:  # to avoid too many limbs in the same direction
+                break
+        posture.append(left)
+        if not 'both' in left[1]:
+            while True:
+                right = RandomJointWithDirection(right_upper_joints)
+                if not right[1] == left[1] and not right[2] == left[2] and not right[2] == lower[2] and not 'both' in right[1]:  # to avoid duplicates
+                    break
+            posture.append(right)
+        for n,p in enumerate(posture):
+            if n > 0:
+                PrintJointAndDirection(posture[n])
+    else:  # change only the left
+        posture = previous
+        left = posture[1]
+        right = posture[2]
+        # change left
+        while True:
+            left = RandomJointWithDirection(left_upper_joints)
+            if not right[1] == left[1] and not right[2] == left[2] and not right[2] == lower[2]:  # to avoid duplicates
+                break
+        posture[1] = left
+        if 'both' in left[1]:
+            del posture[-1]
+        PrintJointAndDirection(left)
+    print('')
+    return posture
+
 # mancano due gambe distese dritte verso terra
 
 previous_posture = None
 previous_posture = GenerateNewPosture(previous_posture)
 while True:
-    previous_posture = ChangeLower(previous_posture)
+    # previous_posture = ChangeLower(previous_posture)
+    previous_posture = ChangeUpperLeft(previous_posture)
     time.sleep(0.1)
