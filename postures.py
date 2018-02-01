@@ -1,19 +1,23 @@
 import time
 import random
 
-directions = ['down', 'up', 'left', 'right', 'front', 'back']
+# standing posture generator
+
+directions = ['down', 'left', 'right', 'front', 'back', 'up']
 
 options = ['grab', 'torsion']  # grab is for hands, torsion is for the core/torso
 
-lower_joints = ['right knee', 'right foot', 'left knee', 'left foot']  # feet cannot go down
-core_joints = ['head', 'sacrum']  # by head we mean the head top
-left_arm_joints = ['left elbow', 'left hand']
-right_arm_joints = ['right elbow', 'right hand']
+lower_joints = ['right knee', 'right foot', 'left knee', 'left foot']  # feet cannot go down; punta di piedi?
+core_joints = ['head']
+left_upper_joints = ['head', 'left elbow', 'left hand', 'both hands']  # by head we mean the head top, no sacrum
+right_upper_joints = ['head', 'right elbow', 'right hand', 'both hands']
 # what about shoulders?
 
 def RandomDirectionFor(joint_name):
-    if 'foot' in joint_name:
-            return random.randint(1, len(directions) - 1)  # feet cannot go down
+    if 'foot' in joint_name or 'hand' in joint_name:
+        return random.randint(1, len(directions) - 1)  # feet cannot go down; hands down is the default
+    if 'head' in joint_name:
+        return random.randint(0, len(directions) - 2)  # head up is the default
     return random.randint(0, len(directions) - 1)
 
 def DirectionName(direction):
@@ -34,10 +38,17 @@ def PrintJointAndDirection(joint_and_direction):
 
 def PrintPosture():
     PrintJointAndDirection(RandomJointWithDirection(lower_joints))
-    PrintJointAndDirection(RandomJointWithDirection(core_joints))
-    PrintJointAndDirection(RandomJointWithDirection(left_arm_joints))
-    PrintJointAndDirection(RandomJointWithDirection(right_arm_joints))
+    left = RandomJointWithDirection(left_upper_joints)
+    PrintJointAndDirection(left)
+    if not 'both' in left[1]:
+        while True:
+            right = RandomJointWithDirection(right_upper_joints)
+            if not right[1] == left[1] and not 'hand' in right[1]:
+                break
+        PrintJointAndDirection(right)
     print('')
+
+# todo: sequence, only change one thing from previous posture
 
 while True:
     PrintPosture()
