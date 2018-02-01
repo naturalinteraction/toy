@@ -7,12 +7,38 @@ import numpy
 import xwiimote
 import glob
 
-def dev_is_balanceboard(dev):
+''''
+pygame.transform.scale()
+resize to new resolution
+scale(Surface, (width, height), DestSurface = None) -> Surface
+
+
+Make a copy of the image you want to show (to not change the original) and use following:
+self.image = self.original_image.copy()
+# this works on images with per pixel alpha too
+alpha = 128
+self.image.fill((255, 255, 255, alpha), None, pygame.BLEND_RGBA_MULT)
+
+
+def blit_alpha(target, source, location, opacity):
+        x = location[0]
+        y = location[1]
+        temp = pygame.Surface((source.get_width(), source.get_height())).convert()
+        temp.blit(target, (-x, -y))
+        temp.blit(source, (0, 0))
+        temp.set_alpha(opacity)
+        target.blit(temp, location)
+
+
+If you replace the screen.blit(happy, (100, 100)) with a call to blit_alpha(screen, happy, (100, 100), 128), you get the following:
+'''''
+
+def IsBoard(dev):
     time.sleep(2) # if we check the devtype to early it is reported as 'unknown' :(
     iface = xwiimote.iface(dev)
     return iface.get_devtype() == 'balanceboard'
 
-def wait_for_balanceboard():
+def WaitForBoard():
     print("Waiting for balanceboard to connect...")
     mon = xwiimote.monitor(True, False)
     dev = None
@@ -21,7 +47,7 @@ def wait_for_balanceboard():
         connected = mon.poll()
         if connected == None:
             continue
-        elif dev_is_balanceboard(connected):
+        elif IsBoard(connected):
             print("Found balanceboard:", connected)
             dev = connected
             break
@@ -31,44 +57,44 @@ def wait_for_balanceboard():
             pass
     return dev
 
-def measurements(iface):
+def GetMeasurementsFromBoard(iface):
     p = select.epoll.fromfd(iface.get_fd())
     while True:
-        p.poll()  # blocks
+        p.poll(16)  # with no argument, it blocks
         event = xwiimote.event()
         iface.dispatch(event)
         tl = event.get_abs(2)[0]
         tr = event.get_abs(0)[0]
         bl = event.get_abs(3)[0]
         br = event.get_abs(1)[0]
-        yield (tl,tr,bl,br)
+        yield numpy.array((tl,tr,bl,br)) / 100.0
 
-device = wait_for_balanceboard()
-iface = xwiimote.iface(device)
+
+iface = xwiimote.iface(WaitForBoard())
 iface.open(xwiimote.IFACE_BALANCE_BOARD)
+
 pygame.init()
 display = (1920, 1080)
 screen = pygame.display.set_mode(display, DOUBLEBUF)  # |FULLSCREEN)
 clock = pygame.time.Clock()
 aspect_ratio = float(display[0]) / float(display[1])
-i = 0
-done = False
 font = pygame.font.SysFont("Arial", 72)
+
 text = font.render("Hello, World", True, (255, 255, 255))
+
 sound_files = glob.glob('sounds/*.wav')
 print(sound_files)
 effects = []
 for file in sound_files:
     effects.append(pygame.mixer.Sound(file))
-count = 0
+sound_count = 0
+
 image = pygame.image.load('images/glow.png')
+
+i = 0
+
 try:
-    for m in measurements(iface):
-        #print('topleft%.2f'      % (float(m[0]) / 100.0) + 
-        #      ' topright%.2f'    % (float(m[1]) / 100.0) + 
-        #      ' bottomleft%.2f'  % (float(m[2]) / 100.0) + 
-        #      ' bottomright%.2f' % (float(m[3]) / 100.0))
-        m = numpy.array(m) / 100.0
+    for m in GetMeasurementsFromBoard(iface):
         if i == 10:
             zero = m
         i = i + 1
@@ -80,10 +106,10 @@ try:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 pygame.quit()
             if event.type == pygame.KEYDOWN and event.key == pygame.K_s:
-                print(count)
-                effect = effects[count]
+                print(sound_count)
+                effect = effects[sound_count]
                 effect.play()
-                count = count + 1
+                sound_count = sound_count + 1
         screen.fill((100, 100, 100))
         if i > 11:
             press = m - zero
