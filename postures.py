@@ -5,6 +5,9 @@ import random
 
 # todo: voice commands
 
+# GRIPE = Gestural Reduced Instruction Pose Expression
+# PRIPE = Postural Reduced Instruction Pose Expression
+
 directions = ['down', 'left', 'right', 'front', 'back', 'up']  # make sure 'down' remains only the first and 'up' remains only the last
 # foot up and foot front are the same?
 
