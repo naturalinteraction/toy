@@ -77,7 +77,7 @@ def UpdatePoseText(last_pose_change, posture):
 
 USE_BOARD    = False
 CHANGE_SOUND = 1
-POSE_TIME    = 5
+POSE_TIME    = 4.5
 
 iface = None
 if USE_BOARD:
@@ -104,6 +104,9 @@ sound_count = 0
 # images
 image = pygame.image.load('images/glow.png')
 
+direction_stats = []
+for i in range(6):
+    direction_stats.append(0)
 pose_count = -1  # number of poses
 frames = 0
 before = time.time()
@@ -122,6 +125,9 @@ while True:
             pose_text = UpdatePoseText(pose_count, previous_posture)
         else:
             last_pose_change,previous_posture = ChangeSomething(previous_posture)
+            for n,p in enumerate(previous_posture):
+                direction_stats[previous_posture[n][2]] += 1
+            # print(direction_stats)
             pose_text = UpdatePoseText(last_pose_change, previous_posture)
         pose_time = time.time()
         change_sound_played = False

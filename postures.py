@@ -11,7 +11,7 @@ directions = ['down', 'left', 'right', 'front', 'back', 'up']  # make sure 'down
 
 options = ['grab', 'torsion']  # grab is for hands, torsion is for the core/torso
 
-lower_joints = ['right knee', 'right foot', 'left knee', 'left foot']  # feet cannot go down; punta di piedi?
+lower_joints = ['right knee', 'right foot', 'right foot', 'left knee', 'left foot', 'left foot']  # feet cannot go down; punta di piedi?
 core_joints = ['head']
 left_upper_joints = ['head', 'left elbow', 'left hand', 'left hand', 'left hand']  # by head we mean the head top, no sacrum
 right_upper_joints = ['head', 'right elbow', 'right hand', 'right hand', 'right hand']
@@ -19,10 +19,10 @@ right_upper_joints = ['head', 'right elbow', 'right hand', 'right hand', 'right 
 
 def RandomDirectionFor(joint_name):
     if 'foot' in joint_name or 'knee' in joint_name or 'elbow' in joint_name:
-        return random.randint(1, len(directions) - 1)  # feet cannot go down; elbow down does not make sense in most cases; hands down is the default, but could be useful in the sequence case: relax, go back to default, if previously not in default position
+        return int(random.uniform(1, len(directions) - 0.001))  # feet cannot go down; elbow down does not make sense in most cases; hands down is the default, but could be useful in the sequence case: relax, go back to default, if previously not in default position
     if 'head' in joint_name:
-        return random.randint(0, len(directions) - 2)  # head up is the default, but could be useful in the sequence case: relax, go back to default, if previously not in default position
-    return random.randint(0, len(directions) - 1)
+        return int(random.uniform(0, len(directions) - 1.001))  # head up is the default, but could be useful in the sequence case: relax, go back to default, if previously not in default position
+    return int(random.uniform(0, len(directions) - 0.001))
 
 def DirectionName(direction):
     return directions[direction]
@@ -31,7 +31,7 @@ def JointName(joint_names, joint):
     return joint_names[joint]
 
 def RandomJointWithDirection(joints):
-    joint = random.randint(0, len(joints) - 1)
+    joint = int(random.uniform(0, len(joints) - 0.001))
     joint_name = JointName(joints, joint)
     direction = RandomDirectionFor(joint_name)
     direction_name = DirectionName(direction)
@@ -41,6 +41,7 @@ def PrintJointAndDirection(joint_and_direction):
     print(joint_and_direction[1] + '  >>>  ' + joint_and_direction[3])
 
 def GenerateNewPosture(previous):
+    random.seed(time.time())
     if previous == None:
         previous_lower_side = 'none'
     else:
