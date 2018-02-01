@@ -104,12 +104,10 @@ sound_count = 0
 # images
 image = pygame.image.load('images/glow.png')
 
+pose_count = -1  # number of poses
 frames = 0
 before = time.time()
 pose_time = time.time()
-effects[CHANGE_SOUND].play()
-previous_posture = GenerateNewPosture(None)
-pose_text = UpdatePoseText(-1, previous_posture)
 change_sound_played = False
 while True:
     if (time.time() - pose_time) > POSE_TIME - 0.4:
@@ -117,8 +115,14 @@ while True:
             effects[CHANGE_SOUND].play()
             change_sound_played = True
     if (time.time() - pose_time) > POSE_TIME:
-        last_pose_change,previous_posture = ChangeSomething(previous_posture)
-        pose_text = UpdatePoseText(last_pose_change, previous_posture)
+        pose_count = pose_count + 1
+        if pose_count < 3:
+            if pose_count == 0:
+                previous_posture = GenerateNewPosture(None)
+            pose_text = UpdatePoseText(pose_count, previous_posture)
+        else:
+            last_pose_change,previous_posture = ChangeSomething(previous_posture)
+            pose_text = UpdatePoseText(last_pose_change, previous_posture)
         pose_time = time.time()
         change_sound_played = False
     if iface == None:
@@ -151,8 +155,9 @@ while True:
             screen.blit(image, (int(x * 500 + 900), int(- y * 500 + 500)))
             # print(x, y)
 
-    for n,text in enumerate(pose_text):
-        screen.blit(text, (1920 // 2 - text.get_width() // 2, 200 + 100 * n - text.get_height() // 2))
+    if pose_count > -1:
+        for n,text in enumerate(pose_text):
+            screen.blit(text, (1920 // 2 - text.get_width() // 2, 200 + 100 * n - text.get_height() // 2))
 
     pygame.display.flip()
     # pygame.time.wait(15)  # milliseconds

@@ -96,10 +96,7 @@ def ChangeUpper(previous, change_left):
                 break
         posture.append(left)
         if not 'both' in left[1]:
-            while True:
-                right = (2, "right hand", direction_number, direction)  # leave right hand were both were
-                if not right[1] == left[1] and not right[2] == left[2] and not right[2] == lower[2] and not 'both' in right[1]:  # to avoid duplicates
-                    break
+            right = (2, "right hand", direction_number, direction)  # leave right hand were both were
             posture.append(right)
         for n,p in enumerate(posture):
             if n > 0:
