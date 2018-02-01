@@ -3,7 +3,9 @@ import random
 
 # standing posture generator
 
-directions = ['down', 'left', 'right', 'front', 'back', 'up']
+# todo: voice commands
+
+directions = ['down', 'left', 'right', 'front', 'back', 'up']  # make sure 'down' remains only the first and 'up' remains only the last
 
 options = ['grab', 'torsion']  # grab is for hands, torsion is for the core/torso
 
@@ -14,8 +16,8 @@ right_upper_joints = ['head', 'right elbow', 'right hand', 'right hand', 'both h
 # what about shoulders?
 
 def RandomDirectionFor(joint_name):
-    if 'foot' in joint_name or 'hand' in joint_name:
-        return random.randint(1, len(directions) - 1)  # feet cannot go down; hands down is the default, but could be useful in the sequence case: relax, go back to default, if previously not in default position
+    if 'foot' in joint_name or 'hand' in joint_name or 'elbow' in joint_name:
+        return random.randint(1, len(directions) - 1)  # feet cannot go down; elbow down does not make sense in most cases; hands down is the default, but could be useful in the sequence case: relax, go back to default, if previously not in default position
     if 'head' in joint_name:
         return random.randint(0, len(directions) - 2)  # head up is the default, but could be useful in the sequence case: relax, go back to default, if previously not in default position
     return random.randint(0, len(directions) - 1)
@@ -36,20 +38,28 @@ def RandomJointWithDirection(joints):
 def PrintJointAndDirection(joint_and_direction):
     print(joint_and_direction[1] + '  >>>  ' + joint_and_direction[3])
 
-def PrintPosture():
-    PrintJointAndDirection(RandomJointWithDirection(lower_joints))
-    left = RandomJointWithDirection(left_upper_joints)
-    PrintJointAndDirection(left)
+def GenerateNewPosture(previous):
+    posture = []
+    posture.append(RandomJointWithDirection(lower_joints))
+    while True:
+        left = RandomJointWithDirection(left_upper_joints)
+        if not left[2] == posture[-1][2]:
+            break
+    posture.append(left)
     if not 'both' in left[1]:
         while True:
             right = RandomJointWithDirection(right_upper_joints)
-            if not right[1] == left[1] and not 'hand' in right[1]:
+            if not right[1] == left[1] and not 'both' in right[1]:  # to avoid duplicates
                 break
-        PrintJointAndDirection(right)
+        posture.append(right)
+    for p in posture:
+        PrintJointAndDirection(p)
     print('')
+    return posture
 
 # todo: sequence, only change one thing from previous posture
 
+previous_posture = None
 while True:
-    PrintPosture()
-    time.sleep(1)
+    previous_posture = GenerateNewPosture(previous_posture)
+    time.sleep(0.1)
