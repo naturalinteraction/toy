@@ -77,7 +77,7 @@ def UpdatePoseText(last_pose_change, posture):
 
 USE_BOARD    = False
 CHANGE_SOUND = 1
-POSE_TIME    = 1
+POSE_TIME    = 5
 
 iface = None
 if USE_BOARD:
