@@ -111,6 +111,8 @@ while True:
             quit()
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             pygame.quit()
+            print('quit')
+            quit()
         if event.type == pygame.KEYDOWN and event.key == pygame.K_s:
             print(sound_count)
             effect = effects[sound_count]
