@@ -39,17 +39,25 @@ def PrintJointAndDirection(joint_and_direction):
     print(joint_and_direction[1] + '  >>>  ' + joint_and_direction[3])
 
 def GenerateNewPosture(previous):
+    if previous == None:
+        previous_lower_side = 'none'
+    else:
+        previous_lower_side = previous[0][1].partition(' ')[0]
     posture = []
-    posture.append(RandomJointWithDirection(lower_joints))
+    while True:
+        lower = RandomJointWithDirection(lower_joints)
+        if not previous_lower_side in lower[1]:  # alternate between left and right leg
+            break
+    posture.append(lower)
     while True:
         left = RandomJointWithDirection(left_upper_joints)
-        if not left[2] == posture[-1][2]:  # to avoid too many limbs in the same direction
+        if not left[2] == lower[2]:  # to avoid too many limbs in the same direction
             break
     posture.append(left)
     if not 'both' in left[1]:
         while True:
             right = RandomJointWithDirection(right_upper_joints)
-            if not right[1] == left[1] and not right[2] == left[2] and not 'both' in right[1]:  # to avoid duplicates
+            if not right[1] == left[1] and not right[2] == left[2] and not right[2] == lower[2] and not 'both' in right[1]:  # to avoid duplicates
                 break
         posture.append(right)
     for p in posture:
