@@ -13,8 +13,8 @@ options = ['grab', 'torsion']  # grab is for hands, torsion is for the core/tors
 
 lower_joints = ['right knee', 'right foot', 'left knee', 'left foot']  # feet cannot go down; punta di piedi?
 core_joints = ['head']
-left_upper_joints = ['head', 'left elbow', 'left hand', 'left hand', 'both hands']  # by head we mean the head top, no sacrum
-right_upper_joints = ['head', 'right elbow', 'right hand', 'right hand', 'both hands']
+left_upper_joints = ['head', 'left elbow', 'left hand', 'left hand', 'left_hand']  # by head we mean the head top, no sacrum
+right_upper_joints = ['head', 'right elbow', 'right hand', 'right hand', 'left hand']
 # what about shoulders?
 
 def RandomDirectionFor(joint_name):
@@ -56,10 +56,10 @@ def GenerateNewPosture(previous):
         if not left[2] == lower[2]:  # to avoid too many limbs in the same direction
             break
     posture.append(left)
-    if not 'both' in left[1]:
+    if True:
         while True:
             right = RandomJointWithDirection(right_upper_joints)
-            if not right[1] == left[1] and not right[2] == left[2] and not right[2] == lower[2] and not 'both' in right[1]:  # to avoid duplicates
+            if not right[1] == left[1] and not right[2] == lower[2]:  # to avoid duplicates
                 break
         posture.append(right)
     for p in posture:
@@ -85,23 +85,7 @@ def ChangeLower(previous):
 def ChangeUpper(previous, change_left):
     posture = previous
     lower = previous[0]
-    if 'both' in previous[1][1]:  # change left only
-        direction = previous[1][3]
-        direction_number = previous[1][2]
-        posture = []
-        posture.append(lower)
-        while True:
-            left = RandomJointWithDirection(left_upper_joints)
-            if not left[2] == lower[2] and not left[2] == previous[1][2]:  # to avoid too many limbs in the same direction, and repetition
-                break
-        posture.append(left)
-        if not 'both' in left[1]:
-            right = (2, "right hand", direction_number, direction)  # leave right hand were both were
-            posture.append(right)
-        for n,p in enumerate(posture):
-            if n > 0:
-                PrintJointAndDirection(posture[n])
-    else:  # change only one side
+    if True:  # change only one side
         posture = previous
         left = posture[1]
         right = posture[2]
@@ -110,14 +94,12 @@ def ChangeUpper(previous, change_left):
                 left = RandomJointWithDirection(left_upper_joints)
             else:
                 right = RandomJointWithDirection(right_upper_joints) 
-            if not right[1] == left[1] and not right[2] == left[2] and ((not right[2] == lower[2] and not change_left and not right[2] == previous[2][2]) or (not left[2] == previous[1][2] and change_left and not left[2] == lower[2])) and not 'both' in right[1]:  # to avoid duplicates
+            if not right[1] == left[1] and ((not right[2] == lower[2] and not change_left and not right[2] == previous[2][2]) or (not left[2] == previous[1][2] and change_left and not left[2] == lower[2])):  # to avoid duplicates
                 break 
         if change_left:
             posture[1] = left
         else:
             posture[2] = right
-        if 'both' in left[1]:
-            del posture[-1]
         if change_left:
             PrintJointAndDirection(left)
         else:
