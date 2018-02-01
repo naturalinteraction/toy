@@ -4,7 +4,7 @@ import random
 # standing posture generator
 
 # GRIPE = Gestural Reduced Instruction Pose Expression
-# PRIPE = Postural Reduced Instruction Pose Expression
+# PRI[S]PE = Postural Reduced Instruction [Standing] Pose Expression
 
 directions = ['down', 'left', 'right', 'front', 'back', 'up']  # make sure 'down' remains only the first and 'up' remains only the last
 # foot up and foot front are the same?
@@ -38,7 +38,6 @@ def RandomJointWithDirection(joints):
     return [joint, joint_name, direction, direction_name]
 
 def PrintJointAndDirection(joint_and_direction):
-    return
     print(joint_and_direction[1] + '  >>>  ' + joint_and_direction[3])
 
 def GenerateNewPosture(previous):
@@ -127,18 +126,15 @@ def ChangeUpper(previous, change_left):
     print('')
     return posture
 
-# mancano due gambe distese dritte verso terra
+change = -1
 
-delay = 0.01
-previous_posture = None
-previous_posture = GenerateNewPosture(previous_posture)
-time.sleep(2 * delay)
-while True:
-    previous_posture = ChangeLower(previous_posture)
-    time.sleep(delay)
-    previous_posture = ChangeUpper(previous_posture, True)
-    time.sleep(delay)
-    previous_posture = ChangeUpper(previous_posture, False)
-    time.sleep(delay)
-    for p in previous_posture:
-        print(p[1] + ' ' + p[3])
+def ChangeSomething(previous_posture):
+    global change
+    change = (change + 1) % 3
+    if change == 0:
+        return ChangeLower(previous_posture)
+    if change == 1:
+        return ChangeUpper(previous_posture, True)
+    return ChangeUpper(previous_posture, False)
+
+# mancano due gambe distese dritte verso terra

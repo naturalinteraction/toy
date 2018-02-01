@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import pygame
 from pygame.locals import *
 import sys
@@ -6,6 +7,7 @@ import select
 import numpy
 import xwiimote
 import glob
+from postures import *
 
 ''''
 Make a copy of the image you want to show (to not change the original) and use following:
@@ -94,8 +96,14 @@ image = pygame.image.load('images/glow.png')
 
 frames = 0
 before = time.time()
-
+pose_time = time.time()
+previous_posture = GenerateNewPosture(None)
 while True:
+    if (time.time() - pose_time) > 5.0:
+        previous_posture = ChangeSomething(previous_posture)
+        # for p in previous_posture:
+        #     print(p[1] + ' ' + p[3])
+        pose_time = time.time()
     if iface == None:
         m = numpy.array((0, 0, 0, 0))
     else:
