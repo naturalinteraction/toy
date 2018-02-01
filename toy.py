@@ -66,6 +66,14 @@ def InitBoard():
     board_p = select.epoll.fromfd(iface.get_fd())
     return iface, board_p
 
+def UpdatePoseText(posture):
+    pose_text = []
+    for p in posture:
+        pose_text.append(font.render(p[1] + '   ' + p[3], True, (255, 255, 255)))
+    if len(posture) == 2:
+        pose_text.append(font.render('---', True, (255, 255, 255)))
+    return pose_text
+
 use_board = False
 
 iface = None
@@ -81,7 +89,6 @@ clock = pygame.time.Clock()
 # fonts
 # print(pygame.font.get_fonts())
 font = pygame.font.SysFont("ubuntu", 72)
-text = font.render("Hello, World", True, (255, 255, 255))
 
 # sounds
 sound_files = glob.glob('sounds/*.wav')
@@ -98,11 +105,12 @@ frames = 0
 before = time.time()
 pose_time = time.time()
 previous_posture = GenerateNewPosture(None)
+pose_text = UpdatePoseText(previous_posture)
+
 while True:
     if (time.time() - pose_time) > 5.0:
         previous_posture = ChangeSomething(previous_posture)
-        # for p in previous_posture:
-        #     print(p[1] + ' ' + p[3])
+        pose_text = UpdatePoseText(previous_posture)
         pose_time = time.time()
     if iface == None:
         m = numpy.array((0, 0, 0, 0))
@@ -133,7 +141,10 @@ while True:
             y = 2.0 * ((press[0] + press[1]) - (press[2] + press[3])) / (numpy.sum(press))
             screen.blit(image, (int(x * 500 + 900), int(- y * 500 + 500)))
             # print(x, y)
-    screen.blit(text, (320 - text.get_width() // 2, 240 - text.get_height() // 2))
+
+    for n,text in enumerate(pose_text):
+        screen.blit(text, (1920 // 2 - text.get_width() // 2, 200 + 100 * n - text.get_height() // 2))
+
     pygame.display.flip()
     # pygame.time.wait(15)
     # time.sleep(1.0 / 90.0)
