@@ -81,7 +81,7 @@ def ChangeLower(previous):
     print('')
     return posture
 
-def ChangeUpperLeft(previous):
+def ChangeUpper(previous, change_left):
     posture = previous
     lower = previous[0]
     if 'both' in previous[1][1]:  # change both
@@ -101,27 +101,40 @@ def ChangeUpperLeft(previous):
         for n,p in enumerate(posture):
             if n > 0:
                 PrintJointAndDirection(posture[n])
-    else:  # change only the left
+    else:  # change only one side
         posture = previous
         left = posture[1]
         right = posture[2]
-        # change left
         while True:
-            left = RandomJointWithDirection(left_upper_joints)
-            if not right[1] == left[1] and not right[2] == left[2] and not right[2] == lower[2]:  # to avoid duplicates
-                break
-        posture[1] = left
+            if change_left:
+                left = RandomJointWithDirection(left_upper_joints)
+            else:
+                right = RandomJointWithDirection(right_upper_joints) 
+            if not right[1] == left[1] and not right[2] == left[2] and ((not right[2] == lower[2] and not change_left) or (change_left and not left[2] == lower[2])) and not 'both' in right[1]:  # to avoid duplicates
+                break 
+        if change_left:
+            posture[1] = left
+        else:
+            posture[2] = right
         if 'both' in left[1]:
             del posture[-1]
-        PrintJointAndDirection(left)
+        if change_left:
+            PrintJointAndDirection(left)
+        else:
+            PrintJointAndDirection(right)
     print('')
     return posture
 
 # mancano due gambe distese dritte verso terra
 
+delay = 0.01
 previous_posture = None
 previous_posture = GenerateNewPosture(previous_posture)
+time.sleep(2 * delay)
 while True:
-    # previous_posture = ChangeLower(previous_posture)
-    previous_posture = ChangeUpperLeft(previous_posture)
-    time.sleep(0.1)
+    previous_posture = ChangeLower(previous_posture)
+    time.sleep(delay)
+    previous_posture = ChangeUpper(previous_posture, True)
+    time.sleep(delay)
+    previous_posture = ChangeUpper(previous_posture, False)
+    time.sleep(delay)
