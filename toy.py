@@ -102,8 +102,9 @@ for file in sound_files:
 sound_count = 0
 
 # images
-image = pygame.image.load('images/glow.png')
-
+glow = pygame.image.load('images/glow.png')
+body = pygame.image.load('images/body_white.png')
+body = pygame.transform.scale(body, (body.get_width() * 2, body.get_height() * 2))
 direction_stats = []
 for i in range(6):
     direction_stats.append(0)
@@ -152,13 +153,14 @@ while True:
             effect.play()
             sound_count = sound_count + 1
     screen.fill((100, 100, 100))
+    screen.blit(body, (1920 // 2 - body.get_width() // 2, 1080 // 2 - body.get_height() // 2))
     if frames > 11:
         press = m - zero
         # print(press)
         if numpy.sum(press) > 10.0:
             x = 4.0 * ((press[1] + press[3]) - (press[0] + press[2])) / (numpy.sum(press))
             y = 2.0 * ((press[0] + press[1]) - (press[2] + press[3])) / (numpy.sum(press))
-            screen.blit(image, (int(x * 500 + 900), int(- y * 500 + 500)))
+            screen.blit(glow, (int(x * 500 + 900), int(- y * 500 + 500)))
             # print(x, y)
 
     if pose_count > -1:
