@@ -40,6 +40,9 @@ stdscr.nodelay(1)
 
 stdscr.addstr(0, 23, "Status of gpios 0-31", curses.A_REVERSE)
 
+pi.set_pull_up_down(17, pigpio.PUD_OFF)
+pi.write(2, 0)  # turn on relay at startup
+
 while True:
 
    for g in range(GPIOS):
@@ -61,4 +64,5 @@ while True:
    c = stdscr.getch()
 
    if c != curses.ERR:
+      pi.write(2, 1)  # turn off relay at any keypress
       break
