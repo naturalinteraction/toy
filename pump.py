@@ -6,21 +6,14 @@ import time
 
 import pigpio 
 
-
 pi = pigpio.pi()
-
-#on 
-####pi.write(2, 0)
-
-
-#### offf 
-##pi.write(2, 1)
 
 while True:
     localtime = time.localtime(time.time())
-    if localtime.tm_min == 00 and localtime.tm_hour > 8 and localtime.tm_hour < 21:
-        print('zero minutes')
+    if localtime.tm_sec < 30 and localtime.tm_min % 15 and (localtime.tm_hour >= 8 or localtime.tm_hour == 0):
+        print(str(localtime.tm_hour) + ':' + str(localtime.tm_min) + ':' + str(localtime.tm_sec) + ' pump on')
+        pi.write(2, 0)
     else:
-        print('non zero minutes')
-    # if localtime.tm_hour == 10:
-    time.sleep(5)  # seconds
+        print(str(localtime.tm_hour) + ':' + str(localtime.tm_min) + ':' + str(localtime.tm_sec) + ' pump off')
+        pi.write(2, 1)
+    time.sleep(10)  # seconds
