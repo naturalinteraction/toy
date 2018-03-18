@@ -7,8 +7,8 @@ import time
 import pigpio 
 from web import *
 
-pump_log = 'Started.'
-UpdateWeb(pump_log + '<br>')
+pump_log = 'Started.<br>'
+UpdateWeb(pump_log)
 
 StartWebServer()
 pi = pigpio.pi()

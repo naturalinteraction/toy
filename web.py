@@ -8,7 +8,6 @@ def Page():
     return log
 
 class WebPage(resource.Resource):
-    print('webpage')
     isLeaf = True
 
     def render_GET(self, request):
