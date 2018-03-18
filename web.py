@@ -1,17 +1,24 @@
 from twisted.web import server, resource
 from twisted.internet import reactor
 
+global log
+log = ''
+
 def Page():
-    return ('page')
+    return log
 
 class WebPage(resource.Resource):
+    print('webpage')
     isLeaf = True
 
     def render_GET(self, request):
         if not 'pump' in str(request):
             return ''
-        refresh = ''
-        return '<head><link rel="icon" href="http://naturalinteraction.org/favicon.ico">' + refresh + '</head><body><font face="Arial">' + Page() + '</font></body>'
+        return '<head><link rel="icon" href="http://naturalinteraction.org/favicon.ico">' + '' + '</head><body><font face="Arial">' + Page() + '</font></body>'
+
+def UpdateWeb(text):
+    global log
+    log = text
 
 def StartWebServer():
     site = server.Site(WebPage())

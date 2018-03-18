@@ -7,15 +7,19 @@ import time
 import pigpio 
 from web import *
 
+pump_log = 'Started.'
+UpdateWeb(pump_log + '<br>')
+
 StartWebServer()
 pi = pigpio.pi()
 
 while True:
-    WebServerIterate()
-    WebServerIterate()
     localtime = time.localtime(time.time())
     if localtime.tm_sec < 30 and localtime.tm_min % 15 == 0 and (localtime.tm_hour >= 8 or localtime.tm_hour == 0):
-        print(str(localtime.tm_hour) + ':' + str(localtime.tm_min) + ':' + str(localtime.tm_sec) + ' pump on')
+        message = str(localtime.tm_hour) + ':' + str(localtime.tm_min) + ':' + str(localtime.tm_sec) + ' pump on'
+        print(message)
+        pump_log = pump_log + message + '<br>'
+        UpdateWeb(pump_log)
         pi.write(2, 0)
         time.sleep(30)
         print(str(localtime.tm_hour) + ':' + str(localtime.tm_min) + ':' + str(localtime.tm_sec) + ' pump off')
@@ -23,5 +27,9 @@ while True:
     else:
         print(str(localtime.tm_hour) + ':' + str(localtime.tm_min) + ':' + str(localtime.tm_sec) + ' nop')
     if localtime.tm_min == 0 and localtime.tm_sec < 30:
-        print(os.popen("./mif.sh").read().strip())
-    time.sleep(30)  # seconds
+        message = os.popen("./mif.sh").read().strip()
+        print(message)
+        pump_log = pump_log + message + '<br>'
+    for i in range(30):
+        WebServerIterate()
+        time.sleep(1)  # seconds
