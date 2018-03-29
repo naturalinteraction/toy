@@ -15,7 +15,7 @@ pi = pigpio.pi()
 
 while True:
     localtime = time.localtime(time.time())
-    if localtime.tm_sec < 30 and localtime.tm_min % 15 == 0 and (localtime.tm_hour >= 8 or localtime.tm_hour == 0):
+    if localtime.tm_sec < 30 and localtime.tm_min % 15 == 0 and (localtime.tm_hour >= 0 or localtime.tm_hour == 0):  # day and night
         message = str(localtime.tm_hour) + ':' + str(localtime.tm_min) + ':' + str(localtime.tm_sec) + ' pump on'
         print(message)
         pump_log = pump_log + message + '<br>'
