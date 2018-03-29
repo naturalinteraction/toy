@@ -21,7 +21,7 @@ while True:
         pump_log = pump_log + message + '<br>'
         UpdateWeb(pump_log)
         pi.write(2, 0)
-        time.sleep(30)
+        time.sleep(40)
         print(str(localtime.tm_hour) + ':' + str(localtime.tm_min) + ':' + str(localtime.tm_sec) + ' pump off')
         pi.write(2, 1)
     else:
