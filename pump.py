@@ -4,7 +4,7 @@
 
 import os
 import time
-import pigpio 
+import pigpio
 from web import *
 
 pump_log = 'Started.<br>'
