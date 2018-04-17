@@ -15,7 +15,7 @@ pi = pigpio.pi()
 
 while True:
     localtime = time.localtime(time.time())
-    if localtime.tm_hour >= 11 and localtime.tm_hour <= 23:
+    if localtime.tm_hour >= 9 and localtime.tm_hour < 21:
         pi.write(2, 0)  # lamps
     else:
         pi.write(2, 1)  # lamps
