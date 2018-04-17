@@ -21,7 +21,7 @@ def UpdateWeb(text):
 
 def StartWebServer():
     site = server.Site(WebPage())
-    reactor.listenTCP(50000, site)
+    reactor.listenTCP(40000, site)
     reactor.startRunning(False)
 
 def WebServerIterate():
