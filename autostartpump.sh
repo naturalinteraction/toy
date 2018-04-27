@@ -1,4 +1,6 @@
 cd /home/pi/toy
+sudo pigpiod
 echo 'waiting...'
 sleep 30
-xterm -hold -e "python pump.py"
+sudo pigpiod
+xterm -hold -e "sudo pigpiod ; python pump.py"
