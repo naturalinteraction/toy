@@ -19,7 +19,7 @@ while True:
         pi.write(2, 0)  # lamps
     else:
         pi.write(2, 1)  # lamps
-    if localtime.tm_sec < 60 and localtime.tm_min % 10 == 0 and (localtime.tm_hour >= 0 or localtime.tm_hour == 0):  # day and night
+    if localtime.tm_sec < 60 and localtime.tm_min % 5 == 0 and (localtime.tm_hour >= 0 or localtime.tm_hour == 0):  # day and night
         message = str(localtime.tm_hour) + ':' + str(localtime.tm_min) + ':' + str(localtime.tm_sec) + ' pump on'
         print(message)
         pump_log = pump_log + message + '<br>'
